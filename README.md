@@ -1,4 +1,4 @@
-# ETRI_Fashion_How
+# 2024 ETRI 자율성장 인공지능 경진대회 Fashion-How
 <img width="800" alt="스크린샷 2024-08-25 오후 2 23 13" src="https://github.com/user-attachments/assets/00863043-93a4-414b-8935-9a232f4026df">
 
 ## 제한 사항
