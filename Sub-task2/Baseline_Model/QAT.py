@@ -41,8 +41,6 @@ import torch.utils.data.distributed
 
 import torch.nn.functional as F
 
-import torchvision
-
 from sklearn.metrics import confusion_matrix
 from tqdm import tqdm
 
@@ -185,7 +183,7 @@ def quantization_evaluation(
 
     avg_loss = total_loss / total_samples
     top_1, acsa = get_test_metrics(gt_list, pred_list)
-    wandb.log({"val_loss": avg_loss, "val_top_1": top_1, "val_acsa": acsa}, step=epoch)
+    # wandb.log({"val_loss": avg_loss, "val_top_1": top_1, "val_acsa": acsa}, step=epoch)
     print("---------------------------------------------------------------------")
     print(
         f"Step {step}: Quantized Validation Loss: {avg_loss:.5f}, Top-1: {top_1:.5f}, ACSA: {acsa:.5f}"
@@ -211,8 +209,8 @@ def main():
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmarks = False
 
-    if os.path.exists(f"model/{a.version}") is False:
-        os.makedirs(f"model/{a.version}")
+    if os.path.exists(f"./model/{a.version}") is False:
+        os.makedirs(f"./model/{a.version}")
 
     save_path = "model/" + a.version
 
@@ -284,7 +282,7 @@ def main():
                         time.time() - t0,
                     )
                 )
-                wandb.log({"loss": loss.item()}, step=(i + 1) + 170 * epoch)
+                # wandb.log({"loss": loss.item()}, step=(i + 1) + 170 * epoch)
                 quantization_evaluation(
                     net_int, valid_dataloader, step=i + 1 + 170 * epoch, path=save_path
                 )
