@@ -39,16 +39,23 @@ import torch.utils.data
 import torch.utils.data.distributed
 
 from tqdm import tqdm
-import torchvision
-from torchvision.models.quantization import ResNet50_QuantizedWeights
 
+import argparse
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument(
+    "--checkpoint", type=str, default="./model/QAT_ResNet_color/q_RN_step_10.pt"
+)
+
+a = parser.parse_args()
 
 
 def main():
     """The main function of the test process for performance measurement."""
-    weights = torch.load("./model/QAT_ResNet_color/q_RN_step_20.pt", map_location="cpu")
+    weights = torch.load(a.checkpoint, map_location="cpu")
     net_int = Quantizable_ResNet_color("50")
 
     # net.load_state_dict(trained_weights)
