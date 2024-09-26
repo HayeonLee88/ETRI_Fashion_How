@@ -38,33 +38,47 @@ import torch
 import torch.utils.data
 import torch.utils.data.distributed
 
+from tqdm import tqdm
+import torchvision
+from torchvision.models.quantization import ResNet50_QuantizedWeights
+
+
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def main():
     """The main function of the test process for performance measurement."""
-    # net = Baseline_ResNet_color().to(DEVICE)
-    # trained_weights = torch.load('./model/Baseline_ResNet_color/model_100.pt',map_location=DEVICE)
-    net = Baseline_MNet_color().to(DEVICE)
-    trained_weights = torch.load(
-        "./model/Baseline_MNet_color/model_1.pt", map_location=DEVICE
-    )
-    net.load_state_dict(trained_weights)
+    weights = torch.load("./model/QAT_ResNet_color/q_RN_step_20.pt", map_location="cpu")
+    net_int = Quantizable_ResNet_color("50")
+
+    # net.load_state_dict(trained_weights)
+    net_int.cpu().eval()
+    # 모델을 Quantization에 적합하도록 레이어를 통합 (Fuse)
+    net_int.qconfig = torch.quantization.get_default_qconfig("x86")
+    net_int.fuse_model()
+
+    net_int.train()
+    net_int = torch.quantization.prepare_qat(net_int)
+
+    net_int.eval()
+    net_int = torch.quantization.convert(net_int, inplace=True)
+
+    net_int.load_state_dict(weights)
 
     # 아래 경로는 포함된 샘플(validation set)의 경로로, 실제 추론환경에서의 경로는 task.ipynb를 참고 바랍니다.
     df = pd.read_csv("./Dataset/Fashion-How24_sub2_val.csv")
     val_dataset = ETRIDataset_color(df, base_path="./Dataset/val/")
     val_dataloader = torch.utils.data.DataLoader(
-        val_dataset, batch_size=64, shuffle=False, num_workers=0
+        val_dataset, batch_size=64, shuffle=False, num_workers=4
     )
 
     gt_list = np.array([])
     pred_list = np.array([])
 
-    for j, sample in enumerate(val_dataloader):
+    for j, sample in enumerate(tqdm(val_dataloader)):
         for key in sample:
-            sample[key] = sample[key].to(DEVICE)
-        out = net(sample)
+            sample[key] = sample[key].cpu()
+        out = net_int(sample["image"])
 
         gt = np.array(sample["color_label"].cpu())
         gt_list = np.concatenate([gt_list, gt], axis=0)
@@ -76,6 +90,7 @@ def main():
     print("------------------------------------------------------")
     print("Color: Top-1=%.5f, ACSA=%.5f" % (top_1, acsa))
     print("------------------------------------------------------")
+
     return top_1
 
 
