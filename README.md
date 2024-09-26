@@ -46,7 +46,7 @@
 
 ## 👔 Sub-Task 3
 - Sub-task 3의 목적은 연속 학습을 통해 대화를 토대로 가장 적절한 패션 코디의 순위를 매기는 것이다.
-- 성능 평가 metricdms WKT(Weighted Kendall's tau)
+- 성능 평가 metric은 WKT(Weighted Kendall's tau)
   - 켄달타우(Kendall's tau)는 순위 상관 계수(rank correlation coefficient)의 한 종류이며 두 변수들간의 순위를 비교하여 연관성을 계산한다.
 
 ※ Sub-task 3에서 WKT로 측정한 성능은 제한사항에서 제시된 '최소(평가셋) 성능'을 만 족하는 지 판단하는데 사용되며, 리더보드 순위는 모델 용량이 작은 순으로 부여된다.
@@ -55,7 +55,7 @@
 
 ## 👜 Sub-Task 4
 - Sub-task 4의 목적은 제로샷학습을 통해 대화를 토대로 가장 적절한 패션 코디의 순위를 매기는 것이다.
-- 성능 평가 metricdms WKT(Weighted Kendall's tau)
+- 성능 평가 metric은 WKT(Weighted Kendall's tau)
   - 켄달타우(Kendall's tau)는 순위 상관 계수(rank correlation coefficient)의 한 종류이며 두 변수들간의 순위를 비교하여 연관성을 계산한다.
 
 ※ Sub-task 4에서 WKT로 측정한 성능은 제한사항에서 제시된 '최소(평가셋) 성능'을 만 족하는 지 판단하는데 사용되며, 리더보드 순위는 모델 용량이 작은 순으로 부여된다.
